@@ -1,0 +1,14 @@
+.map {
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+}
+.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:20;}
+.room:hover{fill:#ffddb0;stroke:#000000;}
+.st2 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:2;}
+.st2:hover {fill:#ffddb0;stroke:#000000;stroke-linecap:butt;stroke-width:2;}
+.place_fon{fill:red;stroke:black;stroke-width:20;opacity:0.5;}
+.st3 {fill:#24587a;stroke:#000000;stroke-linecap:butt;stroke-width:2;}
+.st3:hover {fill:red;stroke:black;}

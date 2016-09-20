@@ -1,0 +1,68 @@
+div.map {
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+}
+div.tools {
+    width: 800px;
+    height: 32px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+div.place {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+
+}
+.place:hover::after {
+    content: attr(data-title); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    left: 20%; top: 10%; /* Положение подсказки */
+    z-index: 1; /* Отображаем подсказку поверх других элементов */
+    background: rgba(255,255,230,0.9); /* Полупрозрачный цвет фона */
+    font-family: Arial, sans-serif; /* Гарнитура шрифта */
+    font-size: 9px; /* Размер текста подсказки */
+    padding: 3px 5px; /* Поля */
+    border: 1px solid #333; /* Параметры рамки */
+}
+
+use.place:hover::after {
+    content: attr(data-title); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    left: 20%; top: 10%; /* Положение подсказки */
+    z-index: 1; /* Отображаем подсказку поверх других элементов */
+    background: rgba(255,255,230,0.9); /* Полупрозрачный цвет фона */
+    font-family: Arial, sans-serif; /* Гарнитура шрифта */
+    font-size: 9px; /* Размер текста подсказки */
+    padding: 3px 5px; /* Поля */
+    border: 1px solid #333; /* Параметры рамки */
+}
+
+div.place p {
+    font-size: 8px;
+    margin: 8px 0 0 8px;
+    color: #E91E63;
+    font-style: inherit;
+    font-weight: 900;
+    text-shadow: white 1px 0px, white 1px 1px, white 0px 1px, white -1px 1px, white -1px 0px, white -1px -1px, white 0px -1px, white 1px -1px;
+}
+
+.trash{
+    background-image: url(../images/trash.png);
+    left: 750px;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+}
+
+div.work_place  {background-image: url(../images/work_place.png); }
+div.net_printer {background-image: url(../images/net_printer.png);}
+div.info_kiosk  {background-image: url(../images/info_kiosk.png);  }
+div.vks         {background-image: url(../images/vks.png);  }
+div.avf         {background-image: url(../images/avf.png);  }
+div.rack        {background-image: url(../images/rack.png);  }
+div.another     {background-image: url(../images/another.png);  }
