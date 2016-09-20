@@ -1,0 +1,2 @@
+module EquipmentCategoryGroupHelper
+end
