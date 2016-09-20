@@ -1,0 +1,97 @@
+# encoding: utf-8
+ru:
+  iac_title: ФГБУ ИАЦ
+
+  label_common_tab: Общие
+  label_cartridge: Картриджи
+  label_organizations: Объекты автоматизации
+  label_repair: Ремонты
+  label_recovery: Восстановление
+
+
+
+  label_menu_basic: Основные
+  label_menu_equipments: Оборудование
+  label_menu_users: Пользователи
+  label_menu_points: Места установки
+
+  label_printer_category_new: Новая категория принтера
+
+
+  field_printer_category: Модель принтера
+  field_brand: Брэнд
+  field_model: Модель
+  field_inventory: Инвентарный №
+  field_serial: Серийный №
+  field_cartridge: Тип картриджа
+  field_commissioning: Введен в эксплуатацию
+  field_place: Место установки
+  field_name: Наименование
+  field_ord: Порядок сортировки
+
+  field_iswarrantyrepair: Гарантийный ремонт
+  field_regdate: Дата заявки
+  field_remark: Текст заявки
+  field_checkdate: Дата диагностики
+  checkdate: Дата диагностики
+  field_cablesexist: Соединительные кабели
+  field_docexist: Документация
+  field_packexist: Упаковка производителя
+  field_stopperdamage: Пломбы повреждены
+  field_operatingconditions: Условия эксплуатации соответствуют требованиям
+  field_organization: Объект автоматизации
+  field_plan: План этажа
+  field_area: Вершины области
+  field_work_place_category: Рабочее место
+  field_room: Помещение
+  operatingconditions: Условия эксплуатации
+
+  field_extdamage: Внешние повреждения
+  extdamage: Внешние повреждения
+  field_problemdscrptn: Проявления неисправности
+  problemdscrptn: Проявления неисправности
+  field_problemdscrptn2: Установленные неисправности
+  problemdscrptn2: Установленные неисправности
+  field_conclusion: Рекомендации
+  conclusion: Рекомендации
+  field_failure_cause: Установленные причины
+  failure_cause: Установленные причины
+
+  senddate: Поступило в филиал
+  repairdescription: Описание ремонтных работ
+  sendto_oadt: Возвращено ОА
+  isiacexecuted: Исполнено силами филиала
+  sendtoservicecentre: Передано в СЦ
+  getdate: Возвращено из СЦ
+
+  field_senddate: Поступило в филиал
+  field_repairdescription: Описание ремонтных работ
+  field_sendto_oadt: Возвращено ОА
+  field_isiacexecuted: Исполнено силами филиала
+  field_sendtoservicecentre: Передано в СЦ
+  field_getdate: Возвращено из СЦ
+
+
+
+  field_equipment_category: "Оборудование: категория"
+  field_invnumber: "Оборудование: Инв. №"
+  field_sernumber: "Оборудование: Зав. №"
+  field_repair_num: "Ремонт: Номер пр-ва"
+
+  field_point_x: Координата X
+  field_point_y: Координата Y
+
+  project_module_printers: Принтеры
+  project_module_equipments: Оборудование
+
+  permission_printers_view: Принтеры
+  permission_cartridge_process_application: Управление задачами на заправку
+  permission_cartridge_make_application: Регистрация задач на заправку
+  permission_printer_categories_edit: Управление типами картриджей
+  permission_tanker: Заправщик картриджей
+
+  permission_repair_link_to_request: Привязка задачи к оборудованию CIA
+
+  assigned_to_by_default: Исполнитель (по умолчанию)
+
+  not_in_future: не может быть больше текущей даты
