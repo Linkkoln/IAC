@@ -1,0 +1,11 @@
+= title [@organization.name, organization_path(@organization)],
+[@building.name, floors_path(building: @building)],
+[@floor.name, floor_places_path(@floor)],
+"#{@place.category_tname} #{@place.name}"
+- if @place.category_name == work_place
+  =link_to
+  /arm
+  /ibm
+  /monitor
+  /printer
+  /other

@@ -1,0 +1,45 @@
+%table.list
+  %thead
+    %tr
+      %th # | ЦСТП
+      %th Дата заявки
+      %th Местонахождение
+      %th Тип оборудования
+      %th Наименование
+      %th Инвентарный №
+      %th Серийный №
+      %th Установленные неисправности
+      %th Объект Автоматизации
+      %th Статус
+      %th Описание
+      %th Дата выполнения
+  %tbody
+    - @service_requests.each do |sr|
+      %tr{:class => "#{cycle('odd', 'even')}"}
+        %td
+          - if sr.equipment_request
+            - if sr.equipment_request.issue_id
+              = link_to(sr.equipment_request.issue_id, issue_path(sr.equipment_request.issue_id))
+          |
+          = sr.hotlineregnum
+          = sr.id if sr.equipment_request.nil?
+        %td= format_date(sr.regdate)
+        %td= sr.equipment_request.issue.cf_by_name('Местонахождение') if sr.equipment_request && sr.equipment_request.issue_id
+        %td= sr.equipment.equipment_category.name if sr.equipment
+        %td= sr.equipment.stationname if sr.equipment
+        %td= sr.equipment.invnumber if sr.equipment
+        %td= sr.equipment.sernumber if sr.equipment
+        %td= sr.problemdscrptn2 if sr.service_request_equipment_check
+        %td
+          - if sr.equipment_request
+            - if sr.equipment_request.issue_id
+              = sr.equipment_request.issue.project.name
+        %td
+          - if sr.equipment_request
+            - if sr.equipment_request.issue_id
+              = sr.equipment_request.issue.status.name
+        %td
+          - if sr.equipment_request
+            - if sr.equipment_request.issue_id
+              = sr.equipment_request.issue.description
+        %td= format_date(sr.executedt)

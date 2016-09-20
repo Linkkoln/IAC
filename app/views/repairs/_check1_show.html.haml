@@ -1,0 +1,13 @@
+%fieldset
+  %legend Результаты диагностики
+  %table.attributes
+    = issue_fields_rows do |r|
+      - r.left l(:checkdate),          format_date(check1.checkdate)
+      - r.left 'Комплектность',         check1.completeness
+      - r.left l(:extdamage),           check1.extdamage
+      - r.left 'Пломбы',                check1.stopperdamage_text
+      - r.left l(:operatingconditions), check1.operatingconditions_text
+      - r.left l(:problemdscrptn),      check1.problemdscrptn
+      - r.right l(:problemdscrptn2),    check1.problemdscrptn2
+      - r.right l(:conclusion),         check1.conclusion_name
+      - r.right l(:failure_cause),      check1.failure_cause_name

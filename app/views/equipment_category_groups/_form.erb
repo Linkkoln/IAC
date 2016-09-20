@@ -1,0 +1,31 @@
+<%= form_for(@equipment_category_group) do |f| %>
+  <% if @equipment_category_group.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@equipment_category_group.errors.count, "error") %> prohibited this equipment_category_group from being saved:</h2>
+      <ul>
+        <% @equipment_category_group.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="box">
+    <fieldset class="tabular"><legend> Изменить свойства </legend>
+      <div id="all_attributes">
+        <p> <%= f.label :name %> <%= f.text_field :name %> </p>
+        <p> <%= f.label :ord %>  <%= f.text_field :ord %> </p>
+      </div>
+    </fieldset>
+
+    <fieldset class="tabular"><legend> Включить в группу следующие категории оборудования </legend>
+      <% @equipment_categories.order(:name).each do |category| %>
+        <%#= p.check_box category.contentid %>
+        <label class="floating">
+          <%= check_box_tag "categories[#{category.contentid}][]", category.name, (@equipment_category_group.id != nil && category.group_id == @equipment_category_group.id), :id => nil %>
+          <%= category.name %>
+        </label>
+      <% end %>
+    </fieldset>
+  </div>
+  <%= f.submit l(:button_submit)%>
+<% end %>

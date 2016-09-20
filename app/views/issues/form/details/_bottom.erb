@@ -1,0 +1,8 @@
+<% case @issue.tracker.name%>
+<% when 'Планирование' %>
+    <%#= render 'issues/common' %>
+<% when 'Ремонт' %>
+    <%= render partial: 'issues/repair/edit', locals: local_assigns %>
+<% when 'Картриджи' %>
+    <%= render 'issues/cartridge/edit'%>
+<% end %>

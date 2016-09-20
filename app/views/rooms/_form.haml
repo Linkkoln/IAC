@@ -1,0 +1,7 @@
+= labelled_form_for [@floor, @room], multipart: true do |f|
+  = error_messages_for @room
+  .box.tabular
+    %p= f.text_field :name, :required => true, :size => 60
+    %p= f.select :category, Room.categories_for_select, required: true
+    %p= f.text_field :area, :size => 60
+  = f.submit

@@ -1,0 +1,8 @@
+= form_tag({controller: :equipments, action: :index}, method: :get) do |f|
+  %fieldset
+    %legend Фильтр по записям
+    = hidden_field_tag(:group_id, @group_selected_id)
+    = filter_field(:inventory)
+    = filter_field(:serial)
+    = filter_field(:organization) unless @project
+    = submit_tag('Применить')

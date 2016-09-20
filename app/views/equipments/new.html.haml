@@ -1,0 +1,23 @@
+%h2 Регистрация оборудования
+= form_for(@equipment, url: project_equipments_path(@project)) do |f|
+  = f.hidden_field :isinheritedinvnumber
+  = f.hidden_field :ownerid
+  = f.hidden_field :setplaceid
+  = f.hidden_field :bldgaddressid
+  = f.hidden_field :statusid
+  = f.hidden_field :ownerequipmentid
+  = f.hidden_field :equipmenttype
+  = f.hidden_field :invnumber
+  = f.hidden_field :getdate
+  - if @equipment.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@equipment.errors.count, "error")
+        prohibited this equipment from being saved:
+      %ul
+        - @equipment.errors.full_messages.each do |message|
+          %li= message
+  .content.issue
+    = render partial: 'form', locals: {f: f, meth: :new}
+  = f.submit l(:button_submit)
+= link_to 'Назад', project_equipment_path(@project, @main)

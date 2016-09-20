@@ -1,0 +1,29 @@
+.contextual
+  = link_to 'Новая точка', new_floor_place_path(@floor)
+  |
+  = link_to 'Редактировать Точку', edit_floor_place_path(@floor, @point) if @point
+= title [@organization.name, organization_path(@organization)],
+  [@building.name, floors_path(building: @building)],
+  [@floor.name, floor_path(@floor, building: @building)]
+.splitcontentleft#list-left
+  .mypage-box
+    %table.list
+      %thead
+        %tr
+          %th Наименование
+          %th Тип
+          %th Помещение
+          %th Координаты
+          %th=l(:button_sort)
+          %th
+      %tbody
+        - @places.each do |place|
+          %tr{:class => "hascontextmenu #{cycle('odd', 'even')}"}
+            %td= place.name
+            %td= place.category_full_rus_name
+            %td= place.room.name if place.room
+            %td= "#{place.point[:x]} : #{place.point[:y]}"
+            %td.reorder= reorder_links 'place', {:action => 'update', floor_id: @floor.id, :id => place.id}, :put #{:action => 'update', floor_id: @floor.id, :id => place.id}, :put floor_place_path(@floor,place)
+            %td.buttons
+              = link_to l(:button_edit), edit_floor_place_path(@floor, place), :class => 'icon icon-edit'
+              = delete_link floor_place_path(@floor, place)

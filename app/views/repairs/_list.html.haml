@@ -1,0 +1,23 @@
+%table.list
+  %thead
+    %tr
+      %th #
+      %th Дата заявки
+      %th № ЦСТП
+      %th Дата завершения
+      %th
+  %tbody
+    - service_requests.each do |sr|
+      %tr{:class => "#{cycle('odd', 'even')}"}
+        %td
+          -if sr.equipment_request
+            -if sr.equipment_request.issue_id
+              = link_to(sr.equipment_request.issue_id, issue_path(sr.equipment_request.issue_id)) if sr.equipment_request
+            -else
+              \--
+        %td= format_date(sr.regdate)
+        %td= sr.hotlineregnum
+        %td= format_date(sr.executedt)
+        %td= link_to('Удалить', controller: "equipments", action: "delete_repair",
+          id: @equipment, project_id: @project, service_request_id: sr.id,
+          :class => 'icon icon-delete', data: { confirm: 'Заявка на ремонт будет безвозвратно удалена. Вы уверены?' }) if User.current.admin?

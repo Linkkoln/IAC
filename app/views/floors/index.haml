@@ -1,0 +1,103 @@
+= content_for :header_tags do
+  -#= stylesheet_link_tag    'iac',   :plugin => 'iac'
+  -#= javascript_include_tag 'floor', :plugin => 'iac'
+.contextual
+  = link_to 'Новый этаж', new_floor_path(building: @building), class: 'icon icon-add'
+  -if @selected
+    |
+    = link_to 'Редактировать Этаж', edit_floor_path(@selected, building: @building), class: 'icon icon-edit'
+    |
+    = link_to 'Помещения', floor_rooms_path(@selected)
+    |
+    = link_to 'Места установки', floor_places_path(@selected)
+= title [@organization.name, organization_path(@organization)], @building.name
+- if @floors&&@floors.size > 1
+  .tabs
+    %ul
+      - @floors.each do |floor|
+        %li= link_to floor.name||'Этаж', floors_path(building: @building, selected: floor.id), class: (@selected.id != floor.id ? nil : 'selected')
+- if @selected
+  .tools
+    -Place.categories.each_with_index do |h, i|
+      .place{class: "base #{h[1][:name]}",
+            'data-id': h[0],
+            style: "left: #{32*i}px; top: 4px",
+            id: "event",
+            'data-title': h[1][:rus_name]}
+    .trash.droppable
+  .map.droppable{'data-floor': @selected.id}
+    /%svg{xmlns:'http://www.w3.org/2000/svg'}
+    /=image_tag plan_floor_path(@selected), style: 'width: 100%;'
+    /%object{width: '100%', height:'100%', type: "image/svg+xml", data: "#{plan_floor_path(@selected)}"}
+    /= @selected.plan
+    =render 'svg', floor: @selected
+    - @selected.places.each do |p|
+      .place.real_place{class: p.category_name, 'data-id': p.id, 'data-title': p.category_rus_name, style: "left: #{p.point_x}px; top: #{p.point_y}px", id: "event"}
+        %p=p.name
+
+-#= javascript_include_tag 'svg-pan-zoom', plugin: 'iac'
+
+:javascript
+  $('.real_place').dblclick(function(){
+    var floor_id = $('.map').data('floor');
+    var place_id = this.getAttribute('data-id');
+    var token = $("meta[name='csrf-token']").attr("content");
+    window.location.href = "/floors/"+floor_id+"/places/"+place_id+"/edit";
+  });
+
+  // $('use.real_place').dblclick(function(){
+  //   var floor_id = $('.map').data('floor');
+  //   var place_id = this.getAttribute('data-id');
+  //   var token = $("meta[name='csrf-token']").attr("content");
+  //   window.location.href = "/floors/"+floor_id+"/places/"+place_id+"/edit";
+  // });
+
+  window.onload = function() {
+    // svgPanZoom('#floor_plan_svg', {
+    //   zoomEnabled: true,
+    //   controlIconsEnabled: true,
+    //   dblClickZoomEnabled: false
+    // });
+    // var svgobject = document.getElementById('floor_plan_svg');
+    // var place = $("#place1", svgobject)
+    // place.attr("fill", "red");
+
+    // place[0].attributes['transform'].value
+
+    // $(svgobject.getElementsByClassName("room")).hover(
+    //   function () {
+    //     var id = $(this).attr("id");
+    //     $("#room #"+id).addClass("highlight");
+    //   },
+    //   function () {
+    //     var id = $(this).attr("id");
+    //     $("#room #"+id).removeClass("highlight");
+    //   }
+    // );
+    //
+    // $(svgobject.getElementsByClassName("place")).hover(
+    //   function () {
+    //     var id = $(this).attr("id");
+    //     $("#place #"+id).addClass("highlight");
+    //   },
+    //   function () {
+    //     var id = $(this).attr("id");
+    //     $("#place #"+id).removeClass("highlight");
+    //   }
+    // );
+
+    // $(svgobject.getElementsByClassName("room")).tooltip({
+    //   bodyHandler: function() {
+    //     var id     = $(this).attr("id");
+    //     var area   = $("#areas #"+id+" td:nth-child(2)").text();
+    //     var result = $("<p>").append($("<strong>").text(area));
+    //     $("#areas #"+id+" td:nth-child(2)").nextAll().each(function(){
+    //       var pos = $(this).prevAll().length+1;
+    //       var title = $("#areas thead th:nth-child("+pos+")").text();
+    //       var value = $(this).text();
+    //       result.append($("<p>").text(title + ": " + value));
+    //     });
+    //     return result;
+    //   }
+    // });
+  };

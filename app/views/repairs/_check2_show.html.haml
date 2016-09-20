@@ -1,0 +1,8 @@
+%fieldset
+  %legend Результаты повторной диагностики
+  %table.attributes
+    = issue_fields_rows do |r|
+      - r.left l(:checkdate),           format_date(check2.checkdate)
+      - r.left l(:problemdscrptn2),     check2.problemdscrptn2
+      - r.right l(:conclusion),         check2.conclusion_name
+      - r.right l(:failure_cause),      check2.failure_cause_name

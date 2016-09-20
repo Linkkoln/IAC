@@ -1,0 +1,155 @@
+<%# Сначала обрабатываем простые задачи, потом общие %>
+
+<% status_cartridge_order = @issue.status_cartridge_order%>
+<% if @issue.project.identifier != 'all' %>
+  <% if @issue.cartridges.count > 0 %>
+    <hr>
+    <h3> Список принтеров на заправку </h3>
+    <%
+      if User.current.allowed_to?(:cartridge_process_application, @project)
+        right_user = 1
+      else
+        right_user = 0
+      end
+    %>
+    <% tanker = User.current.allowed_to?(:tanker, @project) #Заправщик %>
+
+    <div class="autoscroll">
+      <table class="list">
+        <thead>
+        <tr>
+          <%= content_tag('th', h('Наименование')) %>
+          <%= content_tag('th', h('Инвентарный №')) %>
+          <%= content_tag('th', h('Серийный №')) %>
+          <%= content_tag('th', h('Картридж')) %>
+          <%= content_tag('th', h('Заявлено')) %>
+          <% if (@issue.status_cartridge_order + right_user) > 2 %>
+            <%= content_tag('th', h('Принято')) %>
+          <% end %>
+          <% if (status_cartridge_order + right_user) > 3 %>
+            <%= content_tag('th', h('Отправлено')) %>
+          <% end %>
+          <% if status_cartridge_order > 4 %>
+              <%= content_tag('th', h('Заправлено')) %>
+              <%= content_tag('th', h('Восстановлено')) %>
+              <%= content_tag('th', h('Списано')) %>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% @issue.cartridges.all.each do |pc| %>
+            <tr id="printer-<%= pc.printer.id %>" class=" <%= cycle('odd', 'even') %>">
+              <td> <%= pc.printer.name %> </td>
+              <td> <%= pc.printer.inventory %></td>
+              <td> <%= pc.printer.serial %></td>
+              <td> <%= pc.printer.printer_category.cartridge %></td>
+              <td> <%= pc.crtr_plan %></td>
+              <% if (status_cartridge_order+right_user) > 2 %> <%#Новая или права суда в статусе Сформировано%>
+                  <td> <%= pc.crtr_real %></td>
+              <% end %>
+              <% if (status_cartridge_order+right_user) > 3 %>
+                  <td> <%= pc.crtr_send %></td>
+              <% end %>
+              <% if status_cartridge_order>4 %>
+                  <td> <%= pc.crtr_filled %></td>
+                  <td> <%= pc.crtr_restored %></td>
+                  <td> <%= pc.crtr_killed %></td>
+              <% end %>
+            </tr>
+        <% end -%>
+        </tbody>
+      </table>
+    </div>
+
+    <h4> Список картриджей по типам на заправку </h4>
+
+    <div class="autoscroll">
+      <table class="list">
+        <thead>
+        <tr>
+          <%= content_tag('th', h('Картридж')) %>
+          <%= content_tag('th', h('В работе, шт')) %>
+        </tr>
+        </thead>
+        <tbody>
+        <% @issue.cartridges_by_type.each do |pc| %>
+            <tr id="printer-<%= pc.cartridge %>" class=" <%= cycle('odd', 'even') %>">
+              <td> <%= pc.cartridge %> </td>
+              <td> <%= case @issue.status_cartridge_order
+                         when 1 then pc.plan_count
+                         when 2 then pc.plan_count
+                         when 3 then pc.real_count
+                         else pc.send_count
+                       end %></td>
+            </tr>
+        <% end -%>
+        </tbody>
+      </table>
+    </div>
+    <%= button_to "Принять", "#{issue_path(@issue)}/receive_cartridges", class: 'button', method: 'get' if tanker && @issue.status_cartridge_order == 2 && !@issue.common?%>
+
+    <h4> Документы на печать </h4>
+    <% if @issue.status_cartridge_order > 1 %>
+      <%= button_to "Заявка", "#{issue_path(@issue)}/cartridges/request_for_cartridges.rtf", class: 'button', method: 'get' %>
+    <% end %>
+    <% if (@issue.status_cartridge_order == 3 && right_user == 1) || tanker %>
+        <%= button_to "Акт приемки на заправку", "#{issue_path(@issue)}/cartridges/act_of_receiving_cartridges.rtf", class: 'button', method: 'get' %>
+    <% end %>
+    <% if (@issue.status_cartridge_order > 4 && right_user == 1) || tanker %>
+        <%= button_to "Акт выдачи картриджей", "#{issue_path(@issue)}/cartridges/act_of_issuing_cartridges.rtf", class: 'button', method: 'get' %>
+    <% end %>
+  <% end %>
+<% else %>
+    <h4> Список картриджей по типам на заправку </h4>
+
+    <div class="autoscroll">
+      <table class="list">
+        <thead>
+        <tr>
+          <%= content_tag('th', h('Тип Картриджа')) %>
+          <%= content_tag('th', h('Принято')) %>
+          <%= content_tag('th', h('Отправлено')) %>
+          <% if status_cartridge_order>3 %>
+              <%= content_tag('th', h('Заправлено')) %>
+              <%= content_tag('th', h('Восстановлено')) %>
+              <%= content_tag('th', h('Списано')) %>
+              <%= content_tag('th', h('')) %>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% @issue.cartridges_by_type.each do |pc| %>
+            <tr id="printer-<%= pc.cartridge %>" class=" <%= cycle('odd', 'even') %>">
+              <td> <%= pc.cartridge %> </td>
+              <td> <%= pc.real_count %></td>
+              <td> <%= pc.send_count %></td>
+              <% if status_cartridge_order>3 %>
+                  <td> <%= pc.filled_count %></td>
+                  <td> <%= pc.restored_count %></td>
+                  <td> <%= pc.killed_count %></td>
+                  <td> <%= link_to l(:button_edit), "#{@issue.id}/cartridge_category/#{pc.cartridge}", :class => 'icon icon-edit' %></td>
+              <% end %>
+            </tr>
+        <% end %>
+        <tr id="printer-count" class=" <%= cycle('odd', 'even') %>">
+          <td> <%= "Всего" %> </td>
+          <td> <%= @issue.count_cartridges.real_count %> </td>
+          <td> <%= @issue.count_cartridges.send_count %> </td>
+          <% if status_cartridge_order>3 %>
+            <td> <%= @issue.count_cartridges.filled_count %> </td>
+            <td> <%= @issue.count_cartridges.restored_count %> </td>
+            <td> <%= @issue.count_cartridges.killed_count %> </td>
+            <td> </td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <h4> Документы на печать </h4>
+    <% if @issue.status_cartridge_order > 1 %>
+        <%= button_to "Заявка", "#{issue_path(@issue)}/cartridges/common_request_for_cartridges.rtf", class: 'button', method: 'get' %>
+    <% end %>
+    <% if @issue.status_cartridge_order > 1 %>
+        <%= button_to "Список для отчета", "#{issue_path(@issue)}/cartridges/quarter_report_on_cartridges.rtf", class: 'button', method: 'get' %>
+    <% end %>
+<% end %>

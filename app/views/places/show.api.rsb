@@ -1,0 +1,7 @@
+api.place do
+  api.id @place.id
+  api.name @place.name
+  api.category @place.category
+  api.point_x @place.point_x
+  api.point_y @place.point_y
+end

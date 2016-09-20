@@ -1,0 +1,18 @@
+- unless sr.check2
+  - sr.build_check2
+  - sr.check2.checkdate = Date.current
+  - sr.check2.problemdscrptn2 = sr.check1.problemdscrptn2
+  -# sr.check2.set_default
+= form.fields_for :check2, sr.check2 do |rf|
+  = rf.hidden_field :id
+  %fieldset.tabular
+    %legend Результаты повторной диагностики
+    .content.splitcontent
+      .splitcontentleft
+        %p#checkdate
+          = rf.text_field(:checkdate, :size => 10, :required => true)
+          = calendar_for('issue_service_request_check2_checkdate')
+        %p= rf.text_area :problemdscrptn2 #Установленные неисправности
+      .splitcontentright
+        %p= rf.select(:conclusion,    options_from_collection_for_select(sr.check2.conclusions,    :first, :last, sr.check2.conclusion||2),   {:include_blank => '<<  >>'})
+        %p= rf.select(:failure_cause, options_from_collection_for_select(sr.check2.failure_causes, 'id',  'name', sr.check2.failure_cause||sr.check1.failure_cause),{:include_blank => '<<  >>'})

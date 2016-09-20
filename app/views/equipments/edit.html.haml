@@ -1,0 +1,14 @@
+%h2 Редактирование оборудования
+= form_for(@equipment, url: my_equipment_path(@project, @equipment)) do |f|
+  - if @equipment.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@equipment.errors.count, "error")
+        prohibited this equipment from being saved:
+      %ul
+        - @equipment.errors.full_messages.each do |message|
+          %li= message
+  .content.issue
+    = render partial: 'form', locals: {f: f, meth: :edit}
+  = f.submit l(:button_submit)
+= link_to 'Назад', my_equipment_path(@project, @equipment)

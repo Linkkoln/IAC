@@ -1,0 +1,30 @@
+<h2>Группы оборудования</h2>
+<div class="autoscroll">
+<table class="list issues">
+  <thead>
+  <tr>
+    <th>Наименование</th>
+    <th>Порядок сортировки</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @equipment_category_groups.order(:ord).each do |group| %>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td><%= link_to group.name, group%></td>
+      <td><%=         group.ord  %></td>
+      <td><%= link_to l(:button_edit),  edit_equipment_category_group_path(group), :class => 'icon icon-edit' %>
+          <%= link_to l(:button_delete), group, method: :delete, :class => 'icon icon-delete', data: { confirm: 'Группа оборудования будет удалена. Вы уверены?' } %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td> Прочие <%#= link_to "Прочие" #, other_equipment_category_group_path%></td>
+    <td></td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<br>
+
+<%= link_to 'Добавить', new_equipment_category_group_path %>

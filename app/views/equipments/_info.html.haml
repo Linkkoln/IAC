@@ -1,0 +1,16 @@
+%fieldset.tabular
+  %legend Информация об оборудовании
+  %table.attributes
+    %style
+      th{width:22%;}
+      td{width:28%;}
+    = issue_fields_rows do |r|
+      -r.left 'Наименование',     link_to(equipment.stationname, my_equipment_path(@project, equipment))
+      -r.left 'Тип оборудования', equipment.equipment_category.name
+      -r.left 'Дата ввода',       format_date(equipment.getdate) #if equipment.getdate
+      -r.left 'Гарантия истекает',format_date(equipment.warrantyenddate)
+      -r.left 'Адрес установки',  equipment.institutionaddres.nil? ? 'Обратитесь к администратору базы CIA для внесения данных' : equipment.institutionaddres.fulladdres
+      -r.right 'Инвентарный №',   equipment.invnumber
+      -r.right 'Серийный №',      equipment.sernumber
+      -r.right 'Статус',          equipment.status ? equipment.status.name : ''
+      -r.right 'Место установки', equipment.place_name

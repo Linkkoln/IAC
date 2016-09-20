@@ -1,0 +1,23 @@
+= labelled_form_for [@floor, @place], multipart: true do |f|
+  = error_messages_for @place
+  .box.tabular
+    %p= f.text_field :name, :required => true, :size => 60
+    %p= f.number_field :point_x, in: 0...10000, step: 1,:required => true, :size => 60
+    %p= f.number_field :point_y, in: 0...10000, step: 1,:required => true, :size => 60
+    %p= f.select :category, Place.categories_for_select, {required: true}, {onchange: 'onWpCategoryChange(this)'}
+    %p{style: @place.category == 1 ? '' : 'display: none;'}
+      = f.select :work_place_category, Place.work_place_categories_for_select, required: true, :size => 60
+    %p= f.select :room_id, @floor.rooms.map{|r| [r.name, r.id]}, include_blank: '<-->', required: true, :size => 60
+  = f.submit
+
+:javascript
+  function onWpCategoryChange(e) {
+    var wp;
+    wp = $('#place_work_place_category');
+    if (e.value === "1") {
+      $(wp[0].closest('p')).show();
+    } else {
+      wp[0].value = "2";
+      $(wp[0].closest('p')).hide();
+    }
+  };

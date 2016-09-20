@@ -1,0 +1,25 @@
+<h2>Трекеры доступные роли для выбора при регистрации задачи</h2>
+<%= form_tag({}, method: 'get') do %>
+  <p>
+    <%= hidden_field_tag 'tab', 'role' %>
+    <label><%=l(:label_role)%>:
+      <%= select_tag('role_id', options_from_collection_for_select(Role.sorted.select(&:consider_workflow?), "id", "name", params[:role_id])) %>
+    </label>
+    <%= submit_tag l(:button_edit), :name => nil %>
+  </p>
+<% end %>
+<% if @role  %>
+    <h2>  <%= "Трекеры доступные при регистрации задачи для роли \"#{@role}\"" %> </h2>
+    <%= form_tag(controller: "role_trackers", action: "reload") do %>
+        <%= hidden_field_tag 'tab', 'role' %>
+        <%= hidden_field_tag 'role_id', @role.id %>
+      <%Tracker.all.each do |tracker| %>
+        <p>
+          <%= check_box_tag("tracker[]", tracker.id,  RoleTrackers.where(role_id: params[:role_id], tracker_id: tracker.id).exists?, :id => nil ) %>
+          <%= tracker.name %>
+        </p>
+      <%end%>
+      <%= submit_tag l(:button_save), :name => nil %>
+    <% end %>
+<% end %>
+

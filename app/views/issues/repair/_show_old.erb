@@ -1,0 +1,89 @@
+<hr>
+
+<%#
+   param = ['Номер производства','Дата акта СО7','Тип оборудования','Наименование оборудования','Наименование оборудования',
+            'Год выпуска','Внешние повреждения','Пломбы','Проявление неисправности','Установленные неисправности',
+            'Установленные причины','Зав. №','Использование запчастей','Гарантийный срок',
+            'Комплектность ПТС','Условия эксплуатации','Заключение']
+   errors = []
+
+   param.each do |item|
+     if @issue.custom_value_for(CustomField.find_by_name(item)).to_s == ''
+       errors << item
+     end
+   end
+%>
+
+<div>
+  <% if not @issue.equipment_request.nil? # Связь с оборудованием установлена%>
+    <%= render partial: 'equipments/info' ,   locals: {equipment: @issue.equipment_request.equipment} %>
+    <br>
+    <%= render partial: 'repairs/check1_show', locals: {rc: @issue.equipment_request.service_request} %>
+  <% elsif @issue.equipments_by_inventory # Длина инвномера >3%>
+      <% if @issue.equipments_by_inventory.count == 0 %>
+        Оборудование по указанному инвентарному номеру не нейдено
+      <% elsif @issue.equipments_by_inventory.count > 20 # Длина инвномера >3%>
+        Найдено <% @issue.equipments_by_inventory.count %> единиц оборудования
+      <% else #Найдено менее 20 единиц оборудования%>
+        <h3>Оборудование найденное по инвентарному номеру:</h3>
+        <hr>
+        <% @issue.equipments_by_inventory.each do |equipment| %>
+          <table>
+            <tr>
+              <td><b><%= equipment.invnumber %></b></td>
+              <td><%= equipment.sernumber %></td>
+              <td><%= equipment.getdate.strftime("%d.%m.%Y") if equipment.getdate %></td>
+              <td><%= link_to 'Связать', "/equipment/#{equipment.id}/link_to_issue/#{@issue.id}", title: "Будет создана заявка и установлена связь с оборудованием" %></td>
+            </tr>
+            <tr>
+              <td colspan="2"><%= equipment.equipmenttype.name %></td>
+              <td colspan="2"><%= equipment.status.name if equipment.status %></td>
+            </tr>
+            <tr><td colspan="4"><h4><%= equipment.stationname %></h4></td></tr>
+          </table>
+          <hr>
+        <% end %>
+      <% end %>
+  <% else # Найдено хотябы одно оборудование по инвентарному номеру%>
+    Длина Инвентарного номера не превышает 3х символов
+  <% end %>
+</div>
+
+<div name="co7error" style="background-color:#8aaeff">Формирование актов СО-7 и СО-4.1
+  <%if 1==1 #  errors.size==0%>
+    <%= button_to "Заявка", "#{issue_path(@issue)}/repairs/zayavka.rtf", class: 'button', method: 'get' %>
+    <%= button_to "CO-7",   "#{issue_path(@issue)}/repairs/co7.rtf"    , class: 'button', method: 'get' %>
+    <%= button_to "CO-4.1", "#{issue_path(@issue)}/repairs/co41.rtf"   , class: 'button', method: 'get' %>
+    <%= button_to "CO-4.2", "#{issue_path(@issue)}/repairs/co42.rtf"   , class: 'button', method: 'get' %>
+  <% else %>
+    <div style="background-color:#5199ff;color:#6a0000;"> <b>заполните обязательные поля в задаче</b></div>
+    <% errors.each { |error_item| %>
+      <div style="background-color:#5199ff;color:#ff0000;"> <%= error_item %></div>
+    <% } %>
+  <% end %>
+</div>
+
+
+
+<script language="javascript">
+    function openPopupWin()
+    {
+        var sDesrc;
+        var sParams = new Array(6);
+
+// настройки открываемого окна браузера
+        sParams[0] = "500"; // ширина окна в пикселях
+        sParams[1] = "250"; // высота окна в пикселях
+// "no" - скрыть элемент, "yes" - показать
+        sParams[2] = "no"; // наличие статус строки
+        sParams[3] = "no"; // наличие кнопок (toolbar)
+        sParams[4] = "no"; // наличие меню
+        sParams[5] = "no"; // наличие скроллингов
+        sDesrc = "width=" + sParams[0] + ", height=" + sParams[1] +
+                ", status=" + sParams[2] + ", toolbar=" + sParams[3] +
+                ", menubar=" + sParams[4] + ", scrollbars=" + sParams[5];
+        var win = window.open("", "СО-4.2 : Введите дополнительные данные", sDesrc);
+        win.document.open();
+        win.document.writeln("Функционал генератора на доработке");
+    }
+</script>

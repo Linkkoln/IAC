@@ -1,0 +1,26 @@
+-current_year = Time.now.year
+- (2015..current_year).each do |year|
+  - last_month = year==current_year ? Time.now.month.to_i : 12
+  %p
+    %b= "Документация за #{year}й год:"
+  - if @project.name == 'Техподдержка'
+    %p
+      = "Квартальные отчеты:"
+      = (1..4).collect{|num| link_to num, controller: :templates,  action: :report_co3, type: :quarter, year: year, num: num}.join(', ').html_safe
+    %p
+      = "Полугодовые отчеты:"
+      = (1..2).collect{|num| link_to num, controller: :templates,  action: :report_co3, type: :half_year, year: year, num: num}.join(', ').html_safe
+  - else
+    %p
+      = "Акты СО-3 за #{year}й год:"
+      - (1..last_month).each do |month|
+        = link_to month, project_path(@project) + "/act_co3/#{year}/#{month}" # 'act_co3/'+@project.identifier.to_s+'/'+x.to_s+'/co3.rtf'
+        = ', ' unless month == last_month
+    %p
+      Шаблоны Актов СО-6:
+      - if year==2015
+        = link_to '28', project_path(@project)+'/co6/28'
+        = ', '
+        = link_to '29',  project_path(@project)+'/co6/29'
+      - if year==2016
+        = link_to '30',  project_path(@project)+'/co6/30'

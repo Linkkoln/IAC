@@ -1,0 +1,10 @@
+<h2>Настройка модуля ФГБУ ИАЦ</h2>
+<% iac_tabs = [{:name => 'cartridge', :partial => 'settings/cartridge', label: :label_cartridge},
+               {:name => 'repair',    :partial => 'settings/repair',    label: :label_repair},
+               {:name => 'recovery',  :partial => 'settings/recovery',  label: :label_recovery},
+               {:name => 'role',      :partial => 'role_trackers/edit', label: :label_role}
+] %>
+
+<%= render_tabs iac_tabs %>
+
+<% html_title(l(:label_settings), 'ИАЦ') -%>

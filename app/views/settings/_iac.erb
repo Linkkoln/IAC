@@ -1,0 +1,11 @@
+<% iac_tabs = [{:name => 'common_tab',    :partial => 'settings/common_tab',    label: :label_common_tab},
+               {:name => 'cartridge', :partial => 'settings/cartridge', label: :label_cartridge},
+               {:name => 'repair',    :partial => 'settings/repair',    label: :label_repair},
+               {:name => 'recovery',  :partial => 'settings/recovery',  label: :label_recovery}
+] %>
+
+<%= link_to l(:label_role), role_trackers_path%>
+<%= render_tabs iac_tabs %>
+
+<%# html_title(l(:label_settings), 'ИАЦ') -%>
+

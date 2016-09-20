@@ -1,0 +1,24 @@
+<%= form_tag({}) do -%>
+  <div class="tabs">
+    <ul>
+      <li><%= link_to "Все", (@project ? project_equipments_path : equipments_path),
+                      @group_selected_id==-1 ? {:class => "selected"}:nil%>
+      <% @groups.each { |g|%>
+        <li><%= link_to g.name, (@project ? project_equipments_path : equipments_path)+"?group_id=#{g.id}",
+                        @group_selected_id==g.id ? {:class => "selected"}:nil%> </li>
+      <% } %>
+      <li><%= link_to "Прочие", (@project ? project_equipments_path : equipments_path)+"?group_id=0",
+                      @group_selected_id==0 ? {:class => "selected"}:nil%> </li>
+    </ul>
+    <div class="tabs-buttons" style="display:none;">
+      <button class="tab-left" type="button" onclick="moveTabLeft(this);"></button>
+      <button class="tab-right" type="button" onclick="moveTabRight(this);"></button>
+    </div>
+  </div>
+<% end -%>
+<%= render 'filter' %>
+<div class="autoscroll">
+  <%= render 'list' %>
+  <span class="pagination"><%= pagination_links_full @pages, @count %></span>
+</div>
+

@@ -1,0 +1,39 @@
+<%= labelled_form_for @printer, url: project_printer_path(@project, @printer), :html => {:id => 'printer-form', :multipart => true} do |f| %>
+    <%= error_messages_for 'printer', 'time_entry' %>
+    <div class="box">
+      <fieldset class="tabular"><legend><%= l(:label_change_properties) %></legend>
+        <div id="all_attributes">
+          <% if @printer.safe_attribute?('printer_category_id') %>
+            <p><%= f.select(:printer_category_id,
+                            options_from_collection_for_select(PrinterCategory.active.sorted.all, "id", "name", @printer.printer_category_id),
+                            {required: true}) %></p>
+          <% end %>
+          <% if @printer.safe_attribute? 'inventory' %>
+              <p><%= f.text_field :inventory, :size => 80, :maxlength => 255, :required => true, disabled: true %></p>
+          <% end %>
+          <% if @printer.safe_attribute? 'serial' %>
+              <p><%= f.text_field :serial, :size => 80, :maxlength => 255, :required => true %></p>
+          <% end %>
+          <% if @printer.safe_attribute? 'commissioning' %>
+              <p id="commissioning_area">
+                <%= f.text_field(:commissioning, :size => 10, :required => true) %>
+                <%= calendar_for('printer_commissioning')  %>
+              </p>
+          <% end %>
+          <% if @printer.safe_attribute? 'place' %>
+              <p><%= f.text_field :place, :size => 80, :maxlength => 255, :required => false %></p>
+          <% end %>
+          <% if @printer.safe_attribute?('status') %>
+            <p><%= f.select(:status,
+                            options_for_select(["Исправен", "Неисправен", "Списан"], @printer.status ? @printer.status : "Исправен"),
+                            {required: true}) %></p>
+          <% end %>
+
+          <%= hidden_field_tag 'project_id', @project.id %>
+        </div>
+      </fieldset>
+    </div>
+
+    <%= submit_tag l(:button_save) %>
+    | <%= link_to l(:button_cancel), project_printers_path %>
+<% end %>

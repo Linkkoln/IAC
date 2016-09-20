@@ -1,0 +1,33 @@
+.contextual
+  = link_to 'Редактировать', my_edit_equipment_path(@project, @equipment), class: 'icon icon-edit'
+  - if @project
+    |
+    = link_to 'В ремонт', new_repair_project_equipment_path(@project, @equipment), data: { confirm: 'Будет создана заявка на ремонт. Вы уверены?' }  unless @equipment.status_repair?
+
+= title ['Оборудование', my_equipments_path+"?group_id=#{@equipment.equipment_category.group_id}"],
+  @equipment.stationname
+
+.issue
+  = render partial: 'form', locals: {meth: :show}
+- unless @equipment.related_children.empty?
+  %fieldset.tabular
+    %legend Присоединенное оборудование
+    - @equipments = @equipment.related_children
+    = render 'list'
+- if @equipment.is_arm?&&(User.current.allowed_to?(:equipments_edit, @project))
+  Зарегистрировать:
+  = link_to 'ИБП',     my_new_equipment_path(@project, main: @equipment, equipment_category: :ibp) unless @equipment.has_ibp?
+  |
+  = link_to 'Монитор', my_new_equipment_path(@project, main: @equipment, equipment_category: :monitor) unless @equipment.has_monitor?
+  |  |   Выбрать из списка:
+  = link_to 'ИБП',     select_project_equipment_path(@project, @equipment, equipment_category: :ibp) unless @equipment.has_ibp?
+  |
+  = link_to 'Монитор', select_project_equipment_path(@project, @equipment, equipment_category: :monitor) unless @equipment.has_monitor?
+  |
+  = link_to 'Принтер', select_project_equipment_path(@project, @equipment, equipment_category: :printer) unless @equipment.has_printer?
+%br
+- unless @equipment.service_requests.empty?
+  %br
+  %fieldset
+    %legend Заявки на ремонт
+    = render partial: 'repairs/list', locals: {service_requests: @equipment.service_requests, project: @project}

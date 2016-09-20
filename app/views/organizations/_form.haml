@@ -1,0 +1,26 @@
+%fieldset.tabular
+  %legend Основная информация об оборудовании
+  %table.attributes
+    %style
+      th{width:22%;}
+      td{width:28%;}
+      input[type="text"]{width: 95%;}
+    = fields_rows do |r|
+      -r.left 'Наименование',           f.text_field(:name)
+      -r.left 'Наименовние организации (РП)', f.text_field(:name_r)
+      -r.left 'Проект',                link_to_project(@organization.project)
+      -r.left 'Тип организации',       @organization.organization_category.org_name
+      -r.left 'Vin-код',               @organization.code
+      -r.left 'ID CIA',                @organization.oa_id_iac
+      -r.left 'ID USD',                f.text_field(:oa_id_usd)
+      -r.left 'Телефонный код',        f.text_field(:phone_code)
+      -r.left 'Населенный пункт',      f.text_field(:district_name)
+      -r.left 'Адрес',                 f.text_field(:address)
+      -r.left 'Телефон',               f.text_field(:telefone)
+      -r.right 'Руководитель полностью',       f.text_field(:head_name)
+      -r.right 'Руководитель полностью (РП)',  f.text_field(:head_name_r)
+      -r.right 'Руководитель сокращенно',      f.text_field(:head_short_name)
+      -r.right 'Руководитель сокращенно (РП)', f.text_field(:head_short_name_r)
+      -r.right 'Штатная численность суда',     f.text_field(:full_time_staff)
+      -r.right 'Штатная численность судей',    f.text_field(:count_of_judges)
+      -r.right 'Ответственный инженер',        link_to_user(User.find(@organization.project.cf_by_name('Ответственный инженер')))

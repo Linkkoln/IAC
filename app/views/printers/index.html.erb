@@ -1,0 +1,48 @@
+<h2>Список принтеров доступных для заправки</h2>
+<%= form_tag({}) do -%>
+  <%= hidden_field_tag 'back_url', url_for(params), :id => nil %>
+  <div class="autoscroll">
+    <table class="list">
+      <thead>
+      <tr>
+        <th class="checkbox hide-when-print">
+          <%= link_to image_tag('toggle_check.png'), {},
+                      :onclick => 'toggleIssuesSelection(this); return false;',
+                      :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
+        </th>
+        <th>#</th>
+        <th>Наименование</th>
+        <th>Оборудование</th>
+        <th>Инвентарный №</th>
+        <th>Серийный №</th>
+        <th>Тип картриджа</th>
+        <th>Место установки</th>
+        <th>Пользователь</th>
+        <th>Статус</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @printers.each do |printer| %>
+        <tr id="printer-<%= printer.id %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+          <td class="checkbox hide-when-print"><%= check_box_tag("ids[]", printer.id, false, :id => nil) %></td>
+          <td> <%= link_to printer.id, edit_project_printer_path(@project, printer) %> </td>
+          <td> <%= printer.name %> </td>
+          <td> <%= link_to printer.equipment.stationname, project_equipment_path(@project, printer.equipment) %> </td>
+          <td> <%= printer.inventory %></td>
+          <td> <%= printer.serial %></td>
+          <td> <%= printer.cartridge_category %></td>
+          <td> <%= printer.place %></td>
+          <td> <%= printer.person %></td>
+          <td> <%= printer.status %></td>
+          <td> <%= link_to l(:button_edit), edit_project_printer_path(@project, printer), :class => 'icon icon-edit' %> </td>
+          <td> <% delete_link project_printer_path(@project, printer) %> </td>
+        </tr>
+      <% end -%>
+      </tbody>
+    </table>
+    <span class="pagination"><%= pagination_links_full @pages, @count %></span>
+  </div>
+<% end -%>
+
+<%= context_menu url_for( {:controller => "printers", :action => "context_menu"} )%>

@@ -1,0 +1,63 @@
+- if @issue.equipment_request # Связь с оборудованием установлена
+  - sr = @issue.equipment_request.service_request
+  -# Зачем я это написал?
+  -# Аааа, устанавливаем новые связи, для старых задач для которых они не были созданы
+  - unless sr.check1
+    - sr.check1_id = Check.find_by_requestid(sr.id).id
+    -# Находим Исполнение Поскольку Исполнения может и не быть
+    - sr.executant_id = Executant.find_by_eqpmntcheckid(sr.check1_id).id
+    - sr.save
+  = render partial: 'repairs/show_reg_info.html', locals: {sr: sr}
+  %br/
+  = render partial: 'equipments/info' ,    locals: {equipment: @issue.equipment_request.equipment}
+  %br/
+  = render partial: 'repairs/check1_show', locals: {check1: sr.check1}
+  %br/
+  - if sr.check2 && @issue.status_write_off?
+    = render partial: 'repairs/check2_show', locals: {check2: sr.check2}
+    %br/
+  - if !@issue.status_start?
+    = render partial: 'repairs/exec_show',   locals: {exec: sr.executant}
+    %br
+- elsif @issue.equipments_by_inventory # Длина инвномера >3
+  - if @issue.equipments_by_inventory.count == 0
+    Оборудование по указанному инвентарному номеру не нейдено
+  - elsif @issue.equipments_by_inventory.count > 20 # Длина инвномера >3
+    Найдено
+    - @issue.equipments_by_inventory.count
+    единиц оборудования
+  - else #Найдено менее 20 единиц оборудования
+    %h3 Оборудование найденное по инвентарному номеру:
+    %hr/
+    - @issue.equipments_by_inventory.each do |equipment|
+      %table
+        %tr
+          %td
+            %b= equipment.invnumber
+          %td= equipment.sernumber
+          %td= equipment.getdate.strftime("%d.%m.%Y") if equipment.getdate
+          %td
+            - if @issue.user_can_repair_exec_edit?
+              =link_to 'Связать', "/equipment/#{equipment.id}/link_to_issue/#{@issue.id}", title: "Будет создана заявка и установлена связь с оборудованием"
+            -else
+              Для установления связи с оборудованием обратитесь к администратору базы CIA
+        %tr
+          %td{:colspan => "2"}= equipment.equipment_category.name
+          %td{:colspan => "2"}= equipment.status.name if equipment.status
+        %tr
+          %td{:colspan => "4"}
+            %h4= equipment.stationname
+- else # Найдено хотябы одно оборудование по инвентарному номеру
+  Длина Инвентарного номера не превышает 3х символов
+%fieldset
+  %legend Документы
+  - unless @issue.status.name == 'Новая'
+    = button_to "Заявка", "#{issue_path(@issue)}/repairs/request.rtf", class: 'button', method: 'get'
+    = button_to "Диагностический акт",   "#{issue_path(@issue)}/repairs/co7.rtf"    , class: 'button', method: 'get'
+    = button_to "Акт приема-передачи в ремонт", "#{issue_path(@issue)}/repairs/co41.rtf"   , class: 'button', method: 'get'
+    - if @issue.status_repaired? || @issue.status_write_off?
+      = button_to "Акт приема-передачи из ремонта", "#{issue_path(@issue)}/repairs/co42.rtf"   , class: 'button', method: 'get'
+    - if @issue.status_repaired?
+      = button_to "Акт ввода в эксплуатацию",   "#{issue_path(@issue)}/repairs/co8.rtf"    , class: 'button', method: 'get'
+  - else
+    Для формирования актов задачу необходимо перевести в состоние "Сформирована"

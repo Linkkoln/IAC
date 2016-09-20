@@ -1,0 +1,10 @@
+<%#= form_tag({}) do %>
+    <%= hidden_field_tag 'tab', 'cartridge' %>
+    <p>
+      <label><%= l(:assigned_to_by_default) %></label>
+      <% s = Setting.plugin_iac['cartridge_assigned_to'] %>
+      <%= select_tag('settings[cartridge_assigned_to]',
+                     options_from_collection_for_select(User.sorted.all, "id", "name", Setting.plugin_iac['cartridge_assigned_to'])) %>
+    </p>
+    <%#= submit_tag l(:button_apply), :name => nil %>
+<%# end %>

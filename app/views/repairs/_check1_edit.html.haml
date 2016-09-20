@@ -1,0 +1,23 @@
+= form.fields_for :check1, sr.check1 do |rf|
+  = rf.hidden_field :id
+  %fieldset.tabular
+    %legend Результат диагностики
+    .content.splitcontent
+      .splitcontentleft
+        %p Комплектность:
+        %p= rf.check_box :cablesexist
+        %p= rf.check_box :docexist
+        %p= rf.check_box :packexist
+        %p= rf.text_area :extdamage
+        %p= rf.check_box :stopperdamage
+        %p= rf.check_box :operatingconditions
+        %p= rf.text_area :problemdscrptn
+      .splitcontentright
+        %p#checkdate
+          = rf.text_field(:checkdate, :size => 10, :required => true)
+          = calendar_for('issue_service_request_check1_checkdate')
+        %p Заключение:
+        %p= rf.text_area :problemdscrptn2 #Установленные неисправности
+        %p= rf.select(:conclusion,    options_from_collection_for_select(sr.check1.conclusions,    :first, :last, sr.check1.conclusion),   {:include_blank => '<<  >>'})
+        %p= rf.select(:failure_cause, options_from_collection_for_select(sr.check1.failure_causes, 'id',  'name', sr.check1.failure_cause),{:include_blank => '<<  >>'})
+        %p= # rf.text_area :remark

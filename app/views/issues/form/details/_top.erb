@@ -1,0 +1,17 @@
+<% case @issue.tracker.name%>
+<% when 'Планирование' %>
+  <%#= render 'issues/common' %>
+<% when 'Ремонт' %>
+  <% if @issue.equipment_request && @issue.equipment_request.service_request %>
+    <%  sr = @issue.equipment_request.service_request%>
+    <%= render partial: 'repairs/show_reg_info.html', locals: {sr: sr}%>
+    <%= render partial: 'equipments/info', locals: {equipment: @issue.equipment_request.equipment}%>
+  <% end %>
+<% when 'Картриджи' %>
+  <%#= render 'issues/cartridge/edit'%>
+<% end %>
+
+<% if issue.new_record? && !issue.safe_attribute?('tracker_id') %>
+    <p><%= form.select :tracker_id, issue.project.trackers.collect{|t| [t.name, t.id] if issue.tracker_for_user?(t.id)}.compact, {:required => true},
+                    :onchange => "updateIssueFrom('#{escape_javascript update_issue_form_path(@project, issue)}')" %></p>
+<% end %>

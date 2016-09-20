@@ -1,0 +1,11 @@
+%fieldset
+  %legend Результаты выполнения ремонтных работ
+  %table.attributes
+    = issue_fields_rows do |r|
+      - r.left  l(:senddate),             format_date(exec.senddate)    #Дата передачи в филиал
+      - r.left 'Ремонт',                  exec.iswarrantyrepair_text
+      - r.left  l(:repairdescription),    exec.repairdescription        #Краткое описание ремонтных работ
+      - r.left  l(:sendto_oadt),          format_date(exec.sendto_oadt) #Дата передачи в ОА
+      - r.right l(:isiacexecuted),        exec.isiacexecuted == 1 ? 'Да' : 'Нет' #Признак "исполнено самостоятельно силами ИАЦ": 1- Да, 0 - Нет
+      - r.right l(:sendtoservicecentre),  format_date(exec.sendtoservicecentre)  #Дата передачи в СЦ
+      - r.right l(:getdate),              format_date(exec.getdate)              #Дата возврата из СЦ

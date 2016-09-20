@@ -1,0 +1,23 @@
+.contextual
+  =link_to 'Новый тип принтера', new_printer_category_path, class: "icon icon-add"
+%h2 Типы принтеров
+%table.list
+  %thead
+    %tr
+      %th #
+      %th Бренд
+      %th Модель
+      %th Картридж
+      %th Активный
+      %th
+  %tbody
+    - @printer_categories.each do |pc|
+      %tr{:class => "#{cycle('odd', 'even')}"}
+        %td= pc.id
+        %td= pc.brand
+        %td= pc.model
+        %td= pc.cartridge
+        %td= pc.active
+        %td
+          = link_to "", edit_printer_category_path(pc), class: 'icon icon-edit'
+          = link_to "", printer_category_path(pc), method: :delete, data: {confirm: l(:text_are_you_sure)}, class: 'icon icon-del'

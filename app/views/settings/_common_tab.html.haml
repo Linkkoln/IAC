@@ -1,0 +1,10 @@
+%table.attributes
+  %tr
+    %th Укажите трекер "Восстановление работоспособности"
+    %td= select_tag("settings[tracker_recovery]", options_from_collection_for_select(Tracker.all, "id", "name", Setting.plugin_iac['tracker_recovery']))
+  %tr
+    %th Укажите трекер "Настройка и администрирование"
+    %td= select_tag("settings[tracker_administration]", options_from_collection_for_select(Tracker.all, "id", "name", Setting.plugin_iac['tracker_administration']))
+  %tr
+    %th Укажите трекер "Внеплановое обновление"
+    %td= select_tag("settings[tracker_unscheduled]", options_from_collection_for_select(Tracker.all, "id", "name", Setting.plugin_iac['tracker_unscheduled']))

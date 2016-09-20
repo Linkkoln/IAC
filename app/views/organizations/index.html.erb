@@ -1,0 +1,37 @@
+<div class="contextual">
+  <%= link_to "Синхронизировать с CIA", synchronize_organizations_path , class: 'button'-%>
+</div>
+<h2>Объекты автоматизации</h2>
+<%= form_tag({}) do -%>
+<%= hidden_field_tag 'back_url', url_for(params), :id => nil %>
+<div class="autoscroll">
+  <table class="list">
+    <thead>
+    <tr>
+      <%= content_tag('th', h('#')) %>
+      <%= content_tag('th', h('Код суда')) %>
+      <%= content_tag('th', h('Наименование')) %>
+      <%= content_tag('th', h('Штат судей')) %>
+      <%= content_tag('th', h('Штат суда')) %>
+      <%= content_tag('th', h('Тип ОА')) %>
+      <%= content_tag('th', h('Инженер')) %>
+      <%= content_tag('th', h('Проект')) %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @organizations.each do |organization| %>
+    <tr id="organization-<%= organization.id %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+      <td> <%= organization.id %> </td>
+      <td> <%= link_to organization.code, organization_path(organization) %> </td>
+      <td> <%= organization.name %></td>
+      <td> <%= organization.count_of_judges %> </td>
+      <td> <%= organization.full_time_staff %> </td>
+      <td> <%= organization.organization_category.org_name %></td>
+      <td class="user"><%= link_to_user(User.find(organization.project.cf_by_name('Ответственный инженер'))) %></td>
+      <td class="project"><%= link_to_project(organization.project) %></td>
+    </tr>
+    <% end -%>
+    </tbody>
+  </table>
+</div>
+<% end -%>

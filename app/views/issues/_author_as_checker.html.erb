@@ -1,0 +1,5 @@
+<%= labelled_fields_for :issues, @issue do |f| %>
+<% if @issue.safe_attribute? 'assigned_to_id' %>
+  <p><%= f.select :author_id,  principals_options_for_select(@issue.assignable_users, @issue.author), :include_blank => false, :required => true %></p>
+<% end %>
+<% end %>

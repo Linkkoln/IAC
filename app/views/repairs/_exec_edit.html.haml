@@ -1,0 +1,22 @@
+= form.fields_for :exec, sr.executant do |rf|
+  = rf.hidden_field :id
+  %fieldset.tabular
+    %legend Ремонт
+    .content.splitcontent.ee
+      .splitcontentleft
+        %p#senddate
+          = rf.text_field(:senddate, :size => 10)  #Дата передачи в филиал
+          = calendar_for('issue_service_request_exec_senddate')
+        %p= rf.check_box :iswarrantyrepair
+        %p= rf.text_area :repairdescription #Краткое описание ремонтных работ
+        %p#sendto_oadt
+          = rf.text_field(:sendto_oadt, :size => 10)  #Дата передачи в ОА
+          = calendar_for('issue_service_request_exec_sendto_oadt')
+      .splitcontentright
+        %p= rf.check_box :isiacexecuted #Признак "исполнено самостоятельно силами ИАЦ": 1- Да, 0 - Нет
+        %p#sendtoservicecentre
+          = rf.text_field(:sendtoservicecentre, :size => 10)  #Дата передачи в СЦ
+          = calendar_for('issue_service_request_exec_sendtoservicecentre')
+        %p#getdate
+          = rf.text_field(:getdate, :size => 10)  #Дата возврата из СЦ
+          = calendar_for('issue_service_request_exec_getdate')

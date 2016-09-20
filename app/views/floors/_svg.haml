@@ -1,0 +1,19 @@
+= stylesheet_link_tag  'svg',   :plugin => 'iac'
+= javascript_include_tag 'svg_move_places', :plugin => 'iac'
+%svg.st2{id: 'floor_plan_svg', width: "100%", height: "100%", viewbox: floor.viewbox, onload: "initMove(evt)", onmousemove: "drag(evt)", onmouseup: "deselect()"}
+  =render 'svg_defs'
+  %path.st1{d: floor.polygon}
+  - @rooms.each do |room|
+    %path.st1.room{id: "room-#{room.id}", d: room.area, 'data-name': room.name}
+  - @primitives.each do |primitive|
+    - if primitive&&primitive[:category]&&primitive[:transform]
+      %use{"xlink:href": "##{primitive[:category]}", transform: primitive[:transform]}
+  - @places.each do |place|
+    -#place real_place #{place.category_name}
+    %use{class: "st3 svg_place",
+      id: "place#{place.id}",
+      'data-id': place.id,
+      'data-title': place.category_rus_name,
+      "xlink:href": "##{place.category_name}",
+      transform: "translate(#{place.point_x},#{place.point_y})",
+      onmousedown: "selectElement(evt, #{place.id})"}

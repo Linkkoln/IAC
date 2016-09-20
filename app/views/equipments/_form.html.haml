@@ -1,0 +1,25 @@
+- edit = (meth == :edit)
+- new  = (meth == :new)
+- show = (meth == :show)
+- editor  = User.current.allowed_to?(:equipments_edit, @project)
+- manager =  (User.current.admin?||User.current.allowed_to?(:equipments_manage, @project))&&edit
+
+%fieldset.tabular
+  %legend Информация об оборудовании
+  %table.attributes
+    %style
+      th{width:22%;}
+      td{width:28%;}
+    = issue_fields_rows do |r|
+      -r.left 'Наименование',     editor&&new||manager ? f.text_field(:stationname) : @equipment.stationname
+      -r.left 'Тип оборудования', @equipment.equipment_category.name
+      -r.left 'Дата ввода',       format_date(@equipment.getdate) #if equipment.getdate
+      -r.left 'Гарантия истекает',format_date(@equipment.warrantyenddate)
+      -r.left 'Адрес установки',  @equipment.institutionaddres.nil? ? 'Обратитесь к администратору базы CIA для внесения данных' : @equipment.institutionaddres.fulladdres
+      -r.right 'Инвентарный №',   @equipment.invnumber
+      -r.right 'Серийный №',      editor&&(new||edit&&(@equipment.sernumber.to_s==''))||manager ? f.text_field(:sernumber) : @equipment.sernumber
+      -r.right 'Статус',          @equipment.status ? @equipment.status.name : ''
+      -r.right 'Место установки', editor&&(new||edit)||manager ? f.select(:place_id, @project.places_for_select, include_blank: true) : @equipment.place_name
+  - if @equipment.ownerequipmentid
+    Оборудование включено в комплект
+    = link_to @equipment.main.stationname, my_equipment_path(@project, @equipment.main)

@@ -1,0 +1,24 @@
+= labelled_form_for @floor, multipart: true do |f|
+  = hidden_field_tag 'building', @building.id
+  = hidden_field_tag 'floor[building_id]', @building.id
+  = error_messages_for @floor
+  .box.tabular
+    %p= f.text_field :name, :required => true, :size => 60
+    %p= f.text_field :ord, :required => true
+    %p= f.text_field :viewbox
+    %p= f.text_area  :polygon
+    %p= f.text_area  :primitives
+
+    %p{id: "attachments_form"}
+      %label= 'План этажа'
+      = f.file_field :plan,
+        :id => nil,
+        :class => 'file_selector',
+        :multiple => false,
+        :onchange => 'addInputFiles(this);',
+        :data => { :max_file_size => Setting.attachment_max_size.to_i.kilobytes,
+          :max_file_size_message => l(:error_attachment_too_big, :max_size => number_to_human_size(Setting.attachment_max_size.to_i.kilobytes)),
+          :max_concurrent_uploads => Redmine::Configuration['max_concurrent_ajax_uploads'].to_i,
+          :upload_path => uploads_path(:format => 'js'),
+          :description_placeholder => l(:label_optional_description)}
+  = f.submit

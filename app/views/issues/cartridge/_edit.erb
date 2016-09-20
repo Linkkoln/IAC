@@ -1,0 +1,126 @@
+<%# Сначала обрабатываем простые задачи, потом общие %>
+<% status_cartridge_order = @issue.status_cartridge_order%>
+<%
+   if User.current.allowed_to?(:cartridge_process_application, @project)
+     right_user = 1
+     can_edit = true
+   elsif User.current.allowed_to?(:cartridge_make_application, @project)
+     right_user = 0
+     can_edit = true
+   else
+     right_user = 0
+     can_edit = false
+   end
+%>
+
+<%# Сначала обрабатываем простые задачи, потом общие %>
+<% if @issue.project.identifier != 'all' %>
+    <% if @issue.cartridges.count > 0 %>
+    <hr>
+    <h3> Список принтеров на заправку </h3>
+
+    <table class="list">
+    <thead>
+        <tr>
+          <%= content_tag('th', h('Наименование')) %>
+          <%= content_tag('th', h('Инвентарный №')) %>
+          <%= content_tag('th', h('Серийный №')) %>
+          <%= content_tag('th', h('Картридж')) %>
+          <% if [1,2,3].include? status_cartridge_order %>
+              <%= content_tag('th', h('Заявлено')) %>
+          <% end %>
+          <% if (status_cartridge_order + right_user) > 2 %>
+              <%= content_tag('th', h('Принято')) %>
+          <% end %>
+          <% if (@issue.status_cartridge_order + right_user) > 3 %>
+              <%= content_tag('th', h('Отправлено')) %>
+          <% end %>
+          <% if [5,6].include? status_cartridge_order %>
+              <%= content_tag('th', h('Заправлено')) %>
+              <%= content_tag('th', h('Восстановлено')) %>
+              <%= content_tag('th', h('Списано')) %>
+          <% end %>
+        </tr>
+    </thead>
+    <tbody>
+      <% @issue.cartridges.all.each do |pc| %>
+        <tr id="printer-<%= pc.printer.id %>" class=" <%= cycle('odd', 'even') %>">
+          <td> <%= pc.printer.name %> </td>
+          <td> <%= pc.printer.inventory %></td>
+          <td> <%= pc.printer.serial %></td>
+          <td> <%= pc.printer.printer_category.cartridge %></td>
+
+          <% if @issue.status_cartridge_order==1 && can_edit %> <%#Новая%>
+            <td> <%= number_field_tag("pc[#{pc.id}]", pc.crtr_plan, min: 0, max: 10) %> </td>
+          <% elsif [1,2,3].include? status_cartridge_order %>
+            <td> <%= pc.crtr_plan %></td>
+          <% end %>
+
+          <% if (@issue.status_cartridge_order==2) and (right_user==1) %> <%#Сформировано и админ%>
+              <td> <%= number_field_tag("pc[#{pc.id}]", pc.crtr_real, min: 0, max: pc.crtr_plan) %> </td>
+          <% end %>
+          <% if @issue.status_cartridge_order > 2 %> <%#Принято и дальше%>
+              <td> <%= pc.crtr_real %> </td>
+          <% end %>
+
+          <% if (@issue.status_cartridge_order==3) and (right_user==1) %> <%#Приныто и админ%>
+              <td> <%= number_field_tag("pc[#{pc.id}]", pc.crtr_send, min: 0, max: pc.crtr_real) %> </td>
+          <% end %>
+          <% if @issue.status_cartridge_order > 3 %> <%#Принято и дальше%>
+              <td> <%= pc.crtr_send %> </td>
+          <% end %>
+          <%if [5,6].include? status_cartridge_order %>
+              <td> <%= pc.crtr_filled %></td>
+              <td> <%= pc.crtr_restored %></td>
+              <td> <%= pc.crtr_killed %></td>
+          <% end %>
+        </tr>
+      <% end -%>
+    </tbody>
+    </table>
+
+    <% end %>
+<%# Обрабатываем общие задачи %>
+<% else %>
+    <h4> Список картриджей по типам на заправку </h4>
+    <div class="autoscroll">
+      <table class="list" id="foo">
+        <thead>
+        <tr>
+          <%= content_tag('th', h('Тип Картриджа')) %>
+          <%= content_tag('th', h('Принято')) %>
+          <%= content_tag('th', h('Отправлено')) %>
+          <% if @issue.status_cartridge_order>3 %>
+              <%= content_tag('th', h('Заправлено')) %>
+              <%= content_tag('th', h('Восстановлено')) %>
+              <%= content_tag('th', h('Списано')) %>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% status_cartridge_order = @issue.status_cartridge_order  %>
+        <% @issue.cartridges_by_type.each do |pc| %>
+            <tr id="cartridge-<%= pc.cartridge %>" class=" <%= cycle('odd', 'even') %>">
+              <td> <%= pc.cartridge %> </td>
+              <td> <%= pc.real_count %></td>
+              <td id="<%= pc.cartridge%>"> <%= pc.send_count %></td>
+              <% if (status_cartridge_order==4) and (right_user==1)%>
+                  <%  %>
+                  <td> <%= number_field_tag("filled[#{pc.cartridge}]"  , pc.filled_count   ? pc.filled_count   : pc.send_count , min: 0, max: pc.send_count, disabled: true) %> </td>
+                  <td> <%= number_field_tag("restored[#{pc.cartridge}]", pc.restored_count ? pc.restored_count : 0             , min: 0, max: pc.send_count, onchange:"ff(this,0)") %> </td>
+                  <td> <%= number_field_tag("killed[#{pc.cartridge}]"  , pc.killed_count   ? pc.killed_count   : 0             , min: 0, max: pc.send_count, onchange:"ff(this,1)") %> </td>
+              <% elsif (status_cartridge_order>4) or ((status_cartridge_order==4) and (right_user==0)) %>
+                  <td>  <%= pc.filled_count %></td>
+                  <td>  <%= pc.restored_count %></td>
+                  <td>  <%= pc.killed_count %></td>
+              <% end %>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+     </div>
+<% end %>
+
+<% content_for :header_tags do %>
+    <%= javascript_include_tag 'cartridges', :plugin => 'iac' %>
+<% end %>

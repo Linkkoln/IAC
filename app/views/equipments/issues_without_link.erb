@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Ремонты, не связанные с оборудованием</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Наименование</th>
+    <th>Проект</th>
+    <th>Статус</th>
+    <th>Дата выполнения</th>
+    <th>Id Оборудования</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @issues.each do |issue| %>
+    <% unless issue.request %>
+      <tr>
+        <td><%= link_to issue.id, edit_issue_path(issue) %></td>
+        <td><%= link_to issue.subject, issue_path(issue) %></td>
+        <td><%= issue.project.name %></td>
+        <td><%= issue.status.name %></td>
+        <td><%= issue.due_date %></td>
+        <td><%= issue.request %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>

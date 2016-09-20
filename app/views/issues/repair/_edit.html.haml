@@ -1,0 +1,18 @@
+- if @issue.equipment_request # Связь с оборудованием установлена
+  - sr = @issue.equipment_request.service_request
+  = form.fields_for sr do |sr_form|
+
+    -if @issue.can_repair_start_edit? && @issue.status_start? || !sr.check2 && @issue.status_write_off? && @issue.user_can_repair_exec_edit?
+      = render partial: 'repairs/check1_edit', locals: {sr: sr, form: sr_form}
+    - else
+      = render partial: 'repairs/check1_show', locals: {check1: sr.check1}
+      - if sr.check2
+        - if @issue.status_write_off? && @issue.user_can_repair_exec_edit?
+          = render partial: 'repairs/check2_edit', locals: {sr: sr, form: sr_form}
+        -else
+          = render partial: 'repairs/check2_show', locals: {check2: sr.check2}
+    - if !@issue.status_start?
+      - if @issue.user_can_repair_exec_edit?
+        = render partial: 'repairs/exec_edit',   locals: {sr: sr, form: sr_form}
+      -else
+        = render partial: 'repairs/exec_show',   locals: {exec: sr.executant}

@@ -1,0 +1,13 @@
+= title [@organization.name, organization_path(@organization)],
+  [@building.name, floors_path(building: @building)],
+  'Быстрая регистрация помещений'
+= form_for @floor, url: { controller: 'rooms', :action => "quick_create" }, method: :post do |f|
+  .box.tabular
+    - Room::CATEGORIES.each do |id, name|
+      %p
+        = label "floor[#{name}]", name
+        = hidden_field "floor[#{name}]", :id, value: id
+        = text_field "floor[#{name}]", :count, value: 0, in: 0...100, step: 1, :required => true, :size => 20
+        диапазон номеров (1-5 8 10):
+        = text_field "floor[#{name}]", :range, value: '1-', :required => true, :size => 20
+  = f.submit "Создать"

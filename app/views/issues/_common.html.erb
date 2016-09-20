@@ -1,0 +1,9 @@
+<hr>
+<% if User.current == @issue.assigned_to || User.current.id == 1 %>
+    <% if @issue.custom_value_for(CustomField.find_by_name('Вид работ')).to_s != '' %>
+        <br>
+        <b><%= link_to 'Сформировать подзадачи для каждого суда', "/multiply_issue/#{@issue.id}" %></b>
+    <% else %>
+        <p> <b>Что бы сформировать подзадачи для каждого суда заполните поле "Вид работ" </b></p>
+    <% end %>
+<% end %>

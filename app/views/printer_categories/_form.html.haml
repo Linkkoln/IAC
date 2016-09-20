@@ -1,0 +1,10 @@
+= labelled_form_for @printer_category do |f|
+  = error_messages_for 'printer_category', 'time_entry'
+  .box.tabular
+    %p= f.text_field :brand, :size => 80, :maxlength => 255, :required => true
+    %p= f.text_field :model, :size => 80, :maxlength => 255, :required => true
+    %p= f.text_field :cartridge, :size => 80, :maxlength => 255, :required => true
+    %p= f.check_box :active, label: 'Активный', :required => true
+    = hidden_field_tag 'id', @printer_category.id
+  = submit_tag l(:button_save)
+  | #{link_to l(:button_cancel), printer_categories_path}

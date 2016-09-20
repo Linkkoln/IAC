@@ -1,0 +1,32 @@
+%fieldset.tabular
+  %legend Основная информация об оборудовании
+  %table.attributes
+    %style
+      th{width:22%;}
+      td{width:28%;}
+    = fields_rows do |r|
+      -r.left 'Наименование',           @organization.name
+      -r.left 'Наименовние организации (РП)', @organization.name_r
+      -r.left 'Проект',                link_to_project(@organization.project)
+      -r.left 'Тип организации',       @organization.organization_category.org_name
+      -r.left 'Vin-код',               @organization.code
+      -r.left 'ID CIA',                @organization.oa_id_iac
+      -r.left 'ID USD',                @organization.oa_id_usd
+      -r.left 'Телефонный код',        @organization.phone_code
+      -r.left 'Населенный пункт',      @organization.district_name
+      - if (buildings = @organization.buildings)
+        - r.left('Адрес', link_to(buildings[0].full_address, floors_path(building: buildings[0].id))) if buildings.count == 1
+      - else
+        - buildings.each do |building|
+          - r.left building.name, link_to(building.full_address, floors_path(building: building.id))
+      -r.left 'Телефон',               @organization.telefone
+      -r.right 'Руководитель полностью',       @organization.head_name
+      -r.right 'Руководитель полностью (РП)',  @organization.head_name_r
+      -r.right 'Руководитель сокращенно',      @organization.head_short_name
+      -r.right 'Руководитель сокращенно (РП)', @organization.head_short_name_r
+      -r.right 'Штатная численность суда',     @organization.full_time_staff
+      -r.right 'Штатная численность судей',    @organization.count_of_judges
+      -r.right 'Ответственный инженер',        link_to_user(User.find(@organization.project.cf_by_name('Ответственный инженер')))
+
+= link_to 'Редактировать', edit_organization_path(@organization)
+= link_to 'Назад',         organizations_path

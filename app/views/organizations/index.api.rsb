@@ -1,0 +1,7 @@
+api.array :organizations do
+  @organizations.each do |o|
+    api.o do
+      api.id o.id
+    end
+  end
+end

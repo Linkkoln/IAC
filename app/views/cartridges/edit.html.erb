@@ -1,0 +1,63 @@
+<h2>Список принтеров на заправку по задаче <%= @issue.id %> картридж <%= @cartridge_categoryd %> </h2>
+<%= form_tag(:remote => true, :url => "issues/#{@issue.id}/cartridge_category/#{@cartridge_categoryd}",
+             :method => :post,
+             :html => {:id => "cartridges-category-form", :style => 'display:none;'}) do |f| %>
+    <%
+       sum_send     = 0
+       sum_restored = 0
+       sum_killed   = 0
+    %>
+
+    <table class="list" id="cartridges">
+      <thead>
+      <tr>
+        <%= content_tag('th', h('Суд')) %>
+        <%= content_tag('th', h('Принтер')) %>
+        <%= content_tag('th', h('Инвентарный №')) %>
+        <%= content_tag('th', h('Серийный №')) %>
+        <%= content_tag('th', h('Отправлено')) %>
+        <%= content_tag('th', h('Заправлено')) %>
+        <%= content_tag('th', h('Восстановлено')) %>
+        <%= content_tag('th', h('Сломанных')) %>
+      </tr>
+      </thead>
+      <tbody>
+        <% @cartridges.all.each do |pc| %>
+          <%
+             crtr_filled   = pc.crtr_filled   ? pc.crtr_filled : pc.crtr_send
+             crtr_restored = pc.crtr_restored ? pc.crtr_restored : 0
+             crtr_killed   = pc.crtr_killed   ? pc.crtr_killed   : 0
+             sum_send     = sum_send + pc.crtr_send
+             sum_restored = sum_restored + crtr_restored
+             sum_killed   = sum_killed + sum_killed
+          %>
+          <tr id="cartridge-<%= pc.id %>" class=" <%= cycle('odd', 'even') %>">
+            <td> <%= pc.issue.project.cf_by_name('Наименование ОА') %> </td>
+            <td> <%= pc.printer.name %> </td>
+            <td> <%= pc.printer.inventory %></td>
+            <td> <%= pc.printer.serial %></td>
+            <td id="<%= "send[#{pc.id}]"%>"> <%= pc.crtr_send %></td>
+            <td id="<%= "filled[#{pc.id}]"%>"> <%= crtr_filled %> </td>
+            <td> <%= number_field_tag("restored[#{pc.id}]", crtr_restored, min: 0, max: pc.crtr_send, onchange:"ff(this,0)") %> </td>
+            <td> <%= number_field_tag("killed[#{pc.id}]"  , crtr_killed  , min: 0, max: pc.crtr_send, onchange:"ff(this,1)") %> </td>
+          </tr>
+      <% end -%>
+      <td> Итого </td>
+      <td>  </td>
+      <td>  </td>
+      <td>  </td>
+      <td id="sum_send"><%=     sum_send %></td>
+      <td id="sum_filled"><%=   sum_send - (sum_restored + sum_killed) %></td>
+      <td id="sum_restored"><%= sum_restored %></td>
+      <td id="sum_killed"><%=   sum_killed %></td>
+      </tbody>
+    </table>
+    <p class="buttons">
+      <%= submit_tag l(:button_save) %>
+      <%= submit_tag l(:button_cancel), :onclick => "hideModal(this);", :type => 'button' %>
+    </p>
+<% end %>
+
+<% content_for :header_tags do %>
+    <%= javascript_include_tag 'cartridges', :plugin => 'iac' %>
+<% end %>

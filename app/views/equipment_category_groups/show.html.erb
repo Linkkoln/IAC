@@ -1,0 +1,25 @@
+<h2>Группа оборудования</h2>
+<div class="content issue">
+  <table class="attributes">
+    <tr>
+      <th>Наименование</th>      <td><%= @equipment_category_group.name %></td>
+      <th></th><td></td>
+    </tr>
+    <tr>
+      <th>Порядок сортировки</th><td><%= @equipment_category_group.ord %></td>
+      <th></th><td></td>
+    </tr>
+  </table>
+  <br>
+  <fieldset class="tabular"><legend> Категории оборудования, включенные в группу</legend>
+    <ul>
+    <% @equipment_category_group.equipment_categories.order(:name).each do |category| %>
+      <li><%= category.name %></li>
+    <% end %>
+    </ul>
+  </fieldset>
+
+</div>
+
+<%= link_to 'Редактировать', edit_equipment_category_group_path(@equipment_category_group) %> |
+<%= link_to 'Назад', equipment_category_groups_path %>

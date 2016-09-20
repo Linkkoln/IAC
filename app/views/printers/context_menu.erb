@@ -1,0 +1,5 @@
+<ul>
+  <% if User.current.allowed_to?(:cartridge_make_application, @project) %>
+    <li><%= context_menu_link('В заявку на картриджи', {:controller => 'printers', :action => 'cartridge', :ids => @ids, :project => @project.id, }, :class => 'icon-edit', :method => :post) %></li>
+  <% end %>
+</ul>
